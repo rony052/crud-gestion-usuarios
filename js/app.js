@@ -1,4 +1,5 @@
 
+
 // ======================================
 // SISTEMA DE GESTION DE USUARIOS CRUD
 // ======================================
@@ -53,7 +54,67 @@ function formatDate(date) {
     return parsedDate.toLocaleDateString("es-DO");
 }
 
-// Mostrar usuarios en la tabla
+// ======================================
+// VALIDAR DATOS DEL FORMULARIO
+// ======================================
+
+function validateUser(name, email, phone, currentId) {
+
+    // Validar nombre
+    if (name.length < 3) {
+        alert("El nombre debe tener al menos 3 caracteres.");
+        nameInput.focus();
+        return false;
+    }
+
+    // Validar que el nombre no tenga solamente espacios
+    if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(name)) {
+        alert("El nombre debe contener letras.");
+        nameInput.focus();
+        return false;
+    }
+
+    // Validar correo electrónico
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+        alert("Introduce un correo electrónico válido.");
+        emailInput.focus();
+        return false;
+    }
+
+    // Validar teléfono
+    const phonePattern = /^[0-9+\-\s()]{7,20}$/;
+    const phoneDigits = phone.replace(/\D/g, "");
+
+    if (!phonePattern.test(phone) ||
+        phoneDigits.length < 7 ||
+        phoneDigits.length > 15) {
+
+        alert("Introduce un teléfono válido de 7 a 15 dígitos.");
+        phoneInput.focus();
+        return false;
+    }
+
+    // Evitar correos duplicados
+    const emailExists = users.some(user =>
+        String(user.email || "").toLowerCase() === email &&
+        user.id !== currentId
+    );
+
+    if (emailExists) {
+        alert("Este correo ya está registrado.");
+        emailInput.focus();
+        return false;
+    }
+
+    return true;
+}
+
+// ======================================
+// MOSTRAR USUARIOS EN LA TABLA
+// ======================================
+
 function renderUsers() {
     userTable.replaceChildren();
 
@@ -68,7 +129,7 @@ function renderUsers() {
     // Actualizar total de usuarios registrados
     totalUsers.textContent = users.length;
 
-    // NUEVA FUNCIONALIDAD: contador de resultados
+    // Actualizar contador de resultados
     filteredCount.textContent =
         `Mostrando ${filteredUsers.length} de ${users.length} usuarios`;
 
@@ -99,7 +160,7 @@ function renderUsers() {
 
         const actionsCell = document.createElement("td");
 
-        // Boton editar
+        // Botón editar
         const editButton = document.createElement("button");
         editButton.textContent = "Editar";
         editButton.className = "edit-btn";
@@ -108,7 +169,7 @@ function renderUsers() {
             editUser(user.id);
         });
 
-        // Boton eliminar
+        // Botón eliminar
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "Eliminar";
         deleteButton.className = "delete-btn";
@@ -131,7 +192,10 @@ function renderUsers() {
     });
 }
 
-// Registrar o actualizar usuario
+// ======================================
+// REGISTRAR O ACTUALIZAR USUARIO
+// ======================================
+
 userForm.addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -139,70 +203,48 @@ userForm.addEventListener("submit", function(event) {
     const email = emailInput.value.trim().toLowerCase();
     const phone = phoneInput.value.trim();
 
-    // Validar nombre
-    if (name.length < 3) {
-        alert("El nombre debe tener al menos 3 caracteres.");
-        return;
-    }
-
-    // Validar correo
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailPattern.test(email)) {
-        alert("Introduce un correo electrónico válido.");
-        return;
-    }
-
-    // Validar teléfono
-    const phonePattern = /^[0-9+\-\s()]{7,20}$/;
-
-    if (!phonePattern.test(phone)) {
-        alert("Introduce un teléfono válido.");
-        return;
-    }
-
     const currentId = userIdInput.value;
 
-    // Verificar que el usuario que se está editando exista
-if (currentId) {
-    const userExists = users.some(user => user.id === currentId);
+    // Verificar que el usuario que se edita exista
+    if (currentId) {
+        const userExists = users.some(user => user.id === currentId);
 
-    if (!userExists) {
-        alert("No se encontró el usuario que deseas editar.");
-        resetForm();
-        renderUsers();
-        return;
+        if (!userExists) {
+            alert("No se encontró el usuario que deseas editar.");
+            resetForm();
+            renderUsers();
+            return;
+        }
     }
-}
 
-    // Evitar correos duplicados
-    const emailExists = users.some(user =>
-        user.email === email && user.id !== currentId
-    );
-
-    if (emailExists) {
-        alert("Este correo ya está registrado.");
+    // Ejecutar todas las validaciones
+    if (!validateUser(name, email, phone, currentId)) {
         return;
     }
 
     if (currentId) {
+
         // UPDATE: actualizar usuario
         const userIndex = users.findIndex(
             user => user.id === currentId
         );
 
-        if (userIndex !== -1) {
-            users[userIndex] = {
-                ...users[userIndex],
-                name,
-                email,
-                phone
-            };
-
-            alert("Usuario actualizado correctamente.");
+        if (userIndex === -1) {
+            alert("No se pudo encontrar el usuario.");
+            return;
         }
 
+        users[userIndex] = {
+            ...users[userIndex],
+            name,
+            email,
+            phone
+        };
+
+        alert("Usuario actualizado correctamente.");
+
     } else {
+
         // CREATE: registrar usuario
         const newUser = {
             id: crypto.randomUUID(),
@@ -222,11 +264,17 @@ if (currentId) {
     renderUsers();
 });
 
-// Preparar formulario para editar
+// ======================================
+// PREPARAR FORMULARIO PARA EDITAR
+// ======================================
+
 function editUser(id) {
     const user = users.find(user => user.id === id);
 
-    if (!user) return;
+    if (!user) {
+        alert("No se encontró el usuario.");
+        return;
+    }
 
     userIdInput.value = user.id;
     nameInput.value = user.name;
@@ -243,9 +291,18 @@ function editUser(id) {
     });
 }
 
+feature/validate-user-input
+// ======================================
+// ELIMINAR USUARIO
+// ======================================
+
+function deleteUser(id) {
+
+=======
 
 // Eliminar usuario con validación
 function deleteUser(id) {
+dev
     // Verificar que el usuario exista
     const userExists = users.some(user => user.id === id);
 
@@ -267,7 +324,11 @@ function deleteUser(id) {
     // Eliminar únicamente el usuario seleccionado
     users = users.filter(user => user.id !== id);
 
+feature/validate-user-input
+    // Guardar cambios
+=======
     // Actualizar LocalStorage
+dev
     saveUsers();
 
     // Limpiar formulario si se estaba editando ese usuario
@@ -281,8 +342,15 @@ function deleteUser(id) {
     alert("Usuario eliminado correctamente.");
 }
 
+feature/validate-user-input
+// ======================================
+// LIMPIAR FORMULARIO
+// ======================================
+
+=======
 
 // Limpiar formulario
+dev
 function resetForm() {
     userForm.reset();
     userIdInput.value = "";
@@ -298,5 +366,6 @@ cancelButton.addEventListener("click", resetForm);
 // Buscar usuarios
 searchInput.addEventListener("input", renderUsers);
 
-// Mostrar los usuarios al iniciar
+// Mostrar usuarios al iniciar
 renderUsers();
+
