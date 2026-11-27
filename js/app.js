@@ -291,12 +291,18 @@ function editUser(id) {
     });
 }
 
+feature/validate-user-input
 // ======================================
 // ELIMINAR USUARIO
 // ======================================
 
 function deleteUser(id) {
 
+=======
+
+// Eliminar usuario con validación
+function deleteUser(id) {
+dev
     // Verificar que el usuario exista
     const userExists = users.some(user => user.id === id);
 
@@ -318,7 +324,11 @@ function deleteUser(id) {
     // Eliminar únicamente el usuario seleccionado
     users = users.filter(user => user.id !== id);
 
+feature/validate-user-input
     // Guardar cambios
+=======
+    // Actualizar LocalStorage
+dev
     saveUsers();
 
     // Limpiar formulario si se estaba editando ese usuario
@@ -332,10 +342,15 @@ function deleteUser(id) {
     alert("Usuario eliminado correctamente.");
 }
 
+feature/validate-user-input
 // ======================================
 // LIMPIAR FORMULARIO
 // ======================================
 
+=======
+
+// Limpiar formulario
+dev
 function resetForm() {
     userForm.reset();
     userIdInput.value = "";
