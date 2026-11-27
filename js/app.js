@@ -243,22 +243,44 @@ function editUser(id) {
     });
 }
 
-// Eliminar usuario
+
+// Eliminar usuario con validación
 function deleteUser(id) {
+    // Verificar que el usuario exista
+    const userExists = users.some(user => user.id === id);
+
+    if (!userExists) {
+        alert("No se encontró el usuario que deseas eliminar.");
+        renderUsers();
+        return;
+    }
+
+    // Solicitar confirmación
     const confirmation = confirm(
         "¿Estás seguro de que deseas eliminar este usuario?"
     );
 
-    if (!confirmation) return;
+    if (!confirmation) {
+        return;
+    }
 
+    // Eliminar únicamente el usuario seleccionado
     users = users.filter(user => user.id !== id);
 
+    // Actualizar LocalStorage
     saveUsers();
-    resetForm();
+
+    // Limpiar formulario si se estaba editando ese usuario
+    if (userIdInput.value === id) {
+        resetForm();
+    }
+
+    // Actualizar tabla y contadores
     renderUsers();
 
     alert("Usuario eliminado correctamente.");
 }
+
 
 // Limpiar formulario
 function resetForm() {
