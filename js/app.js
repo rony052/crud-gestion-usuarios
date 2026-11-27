@@ -37,6 +37,21 @@ function saveUsers() {
     localStorage.setItem("users", JSON.stringify(users));
 }
 
+// Mostrar fecha de registro
+function formatDate(date) {
+    if (!date) {
+        return "Sin fecha";
+    }
+
+    const parsedDate = new Date(date);
+
+    if (isNaN(parsedDate.getTime())) {
+        return "Sin fecha";
+    }
+
+    return parsedDate.toLocaleDateString("es-DO");
+}
+
 // Mostrar usuarios en la tabla
 function renderUsers() {
     userTable.replaceChildren();
@@ -44,9 +59,9 @@ function renderUsers() {
     const search = searchInput.value.toLowerCase().trim();
 
     const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(search) ||
-        user.email.toLowerCase().includes(search) ||
-        user.phone.toLowerCase().includes(search)
+        String(user.name || "").toLowerCase().includes(search) ||
+        String(user.email || "").toLowerCase().includes(search) ||
+        String(user.phone || "").toLowerCase().includes(search)
     );
 
     totalUsers.textContent = users.length;
@@ -70,6 +85,10 @@ function renderUsers() {
 
         const phoneCell = document.createElement("td");
         phoneCell.textContent = user.phone;
+
+        // Nueva columna: fecha de registro
+        const dateCell = document.createElement("td");
+        dateCell.textContent = formatDate(user.createdAt);
 
         const actionsCell = document.createElement("td");
 
@@ -97,6 +116,7 @@ function renderUsers() {
             nameCell,
             emailCell,
             phoneCell,
+            dateCell,
             actionsCell
         );
 
@@ -169,7 +189,8 @@ userForm.addEventListener("submit", function(event) {
             id: crypto.randomUUID(),
             name,
             email,
-            phone
+            phone,
+            createdAt: new Date().toISOString()
         };
 
         users.push(newUser);
