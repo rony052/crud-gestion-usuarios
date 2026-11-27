@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios | CRUD</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-content">
+            <h1>Gestión de Usuarios</h1>
+            <p>Sistema de administración de usuarios</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="stats">
+            <div class="stat-card">
+                <span>Total de usuarios</span>
+                <strong id="totalUsers">0</strong>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <h2 id="formTitle">Registrar nuevo usuario</h2>
+
+            <form id="userForm">
+
+                <input type="hidden" id="userId">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Nombre completo</label>
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="Ej. Juan Pérez"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="usuario@email.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Teléfono</label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="Ej. 8091234567"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="submitButton">
+                        Registrar usuario
+                    </button>
+
+                    <button type="button" id="cancelButton" class="cancel-btn" hidden>
+                        Cancelar edición
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <section class="table-section">
+            <div class="table-header">
+                <h2>Lista de usuarios</h2>
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Buscar usuario..."
+                >
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="userTable">
+                    </tbody>
+                </table>
+            </div>
+
+            <p id="emptyMessage">No hay usuarios registrados.</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Sistema CRUD de Usuarios - Proyecto académico</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
