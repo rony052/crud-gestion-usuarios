@@ -163,6 +163,18 @@ userForm.addEventListener("submit", function(event) {
 
     const currentId = userIdInput.value;
 
+    // Verificar que el usuario que se está editando exista
+if (currentId) {
+    const userExists = users.some(user => user.id === currentId);
+
+    if (!userExists) {
+        alert("No se encontró el usuario que deseas editar.");
+        resetForm();
+        renderUsers();
+        return;
+    }
+}
+
     // Evitar correos duplicados
     const emailExists = users.some(user =>
         user.email === email && user.id !== currentId
