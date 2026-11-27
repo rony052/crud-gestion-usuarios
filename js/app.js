@@ -13,6 +13,7 @@ const phoneInput = document.getElementById("phone");
 const userTable = document.getElementById("userTable");
 const totalUsers = document.getElementById("totalUsers");
 const searchInput = document.getElementById("searchInput");
+const filteredCount = document.getElementById("filteredCount");
 
 const formTitle = document.getElementById("formTitle");
 const submitButton = document.getElementById("submitButton");
@@ -64,8 +65,14 @@ function renderUsers() {
         String(user.phone || "").toLowerCase().includes(search)
     );
 
+    // Actualizar total de usuarios registrados
     totalUsers.textContent = users.length;
 
+    // NUEVA FUNCIONALIDAD: contador de resultados
+    filteredCount.textContent =
+        `Mostrando ${filteredUsers.length} de ${users.length} usuarios`;
+
+    // Mostrar mensaje cuando no hay resultados
     emptyMessage.hidden = filteredUsers.length > 0;
 
     if (users.length === 0) {
@@ -86,7 +93,7 @@ function renderUsers() {
         const phoneCell = document.createElement("td");
         phoneCell.textContent = user.phone;
 
-        // Nueva columna: fecha de registro
+        // Columna: fecha de registro
         const dateCell = document.createElement("td");
         dateCell.textContent = formatDate(user.createdAt);
 
